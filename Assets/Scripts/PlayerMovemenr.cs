@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
             movement.y = Input.GetKey(KeyCode.W) ? 1 : Input.GetKey(KeyCode.S) ? -1 : 0;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time >= nextDashTime && !isDashing)
+        if (Input.GetKeyDown(KeyCode.Alpha1) && Time.time >= nextDashTime && !isDashing)
         {
             StartCoroutine(Dash());
         }

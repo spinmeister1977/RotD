@@ -44,14 +44,9 @@ public class PlayerShooting : MonoBehaviour
     {
         if (!isReloading)
         {
-            if (Input.GetKeyDown(KeyCode.I) && isPrimaryModeUnlocked)
-                currentMode = FiringMode.Primary;
-            if (Input.GetKeyDown(KeyCode.O) && isSecondaryModeUnlocked)
-                currentMode = FiringMode.Secondary;
-            if (Input.GetKeyDown(KeyCode.P) && isShotgunModeUnlocked)
-                currentMode = FiringMode.Shotgun;
+            HandleModeSwitch();
 
-            if (currentMode == FiringMode.Secondary)
+            if (currentMode == FiringMode.Secondary && isSecondaryModeUnlocked)
             {
                 HandleCursorMovement();
                 if (Input.GetKeyDown(KeyCode.J))
@@ -61,7 +56,78 @@ public class PlayerShooting : MonoBehaviour
             {
                 HandleArrowKeyShooting();
             }
+
+            CheckAmmoAndReload();
+        
+    
+
+            if (currentMode == FiringMode.Secondary && isSecondaryModeUnlocked)
+            {
+                HandleCursorMovement();
+                if (Input.GetKeyDown(KeyCode.J))
+                    TryShoot();
+            }
+            else
+            {
+                HandleArrowKeyShooting();
+            }
+
         }
+            CheckAmmoAndReload();
+    }
+    private void HandleModeSwitch()
+    {
+        // Check for mode switching to Primary
+        if (Input.GetKeyDown(KeyCode.I) && isPrimaryModeUnlocked)
+        {
+            if (currentMode == FiringMode.Secondary && cursor != null)
+            {
+                cursor.SetActive(false);  // Deactivate the cursor when switching away
+            }
+            currentMode = FiringMode.Primary;
+        }
+
+        // Check for mode switching to Secondary
+        if (Input.GetKeyDown(KeyCode.O) && isSecondaryModeUnlocked)
+        {
+            currentMode = FiringMode.Secondary;
+            if (cursor == null)
+            {
+                InitializeCursor(); // Create the cursor if it does not exist
+            }
+            else
+            {
+                cursor.transform.position = transform.position; // Update cursor's position to player's position
+                cursor.SetActive(true); // Make sure the cursor is active
+            }
+        }
+
+        // Check for mode switching to Shotgun
+        if (Input.GetKeyDown(KeyCode.P) && isShotgunModeUnlocked)
+        {
+            if (currentMode == FiringMode.Secondary && cursor != null)
+            {
+                cursor.SetActive(false);  // Deactivate the cursor when switching away
+            }
+            currentMode = FiringMode.Shotgun;
+        }
+    }
+    private void CheckAmmoAndReload()
+    {
+        if (currentAmmo <= 0 && !isReloading)
+        {
+            StartCoroutine(Reload());
+        }
+    }
+
+    private IEnumerator Reload()
+    {
+        isReloading = true;
+        Debug.Log("Reloading...");
+        yield return new WaitForSeconds(reloadTime);
+        currentAmmo = magazineCapacity;
+        isReloading = false;
+        Debug.Log("Reload complete.");
     }
 
     private void HandleCursorMovement()
@@ -101,6 +167,24 @@ public class PlayerShooting : MonoBehaviour
             currentAmmo--;
         }
     }
+    private void DestroyCursor()
+    {
+        if (cursor != null) // Destroy cursor if switching away from secondary mode
+        {
+            Destroy(cursor);
+            cursor = null; // Set cursor reference to null after destroying it
+        }
+    }
+    private void InitializeCursor()
+    {
+        // Only instantiate if cursorPrefab is assigned and cursor does not already exist
+        if (cursorPrefab && cursor == null)
+        {
+            cursor = Instantiate(cursorPrefab, transform.position, Quaternion.identity);
+        }
+        cursor.transform.position = transform.position;  // Ensure the cursor spawns at the player's position
+        cursor.SetActive(true);
+    }
 
     private void TryShoot()
     {
@@ -119,16 +203,6 @@ public class PlayerShooting : MonoBehaviour
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
         rb.velocity = direction * projectileSpeed;
         Destroy(projectile, projectileLifetime);
-    }
-
-    private IEnumerator Reload()
-    {
-        isReloading = true;
-        Debug.Log("Reloading...");
-        yield return new WaitForSeconds(reloadTime);
-        currentAmmo = magazineCapacity;
-        isReloading = false;
-        Debug.Log("Reload complete.");
     }
 
 
