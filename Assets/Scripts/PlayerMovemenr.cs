@@ -25,8 +25,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isDashing)
         {
-            movement.x = Input.GetAxisRaw("Horizontal");
-            movement.y = Input.GetAxisRaw("Vertical");
+            movement.x = Input.GetKey(KeyCode.A) ? -1 : Input.GetKey(KeyCode.D) ? 1 : 0;
+            movement.y = Input.GetKey(KeyCode.W) ? 1 : Input.GetKey(KeyCode.S) ? -1 : 0;
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time >= nextDashTime && !isDashing)
@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
         isDashing = true;
         nextDashTime = Time.time + dashCooldown + dashTime;
 
-        // Calculate dash direction based on current movement
+        // Calculate dash direction based on current movement, even if it's zero (standing still)
         Vector2 dashDirection = movement.normalized;
         rb.velocity = dashDirection * dashSpeed;
 

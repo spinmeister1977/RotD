@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 63db05b0a4efa5b48b443b6402dfa7e4
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Joystix
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 8226d50d92909f84997c38b8b193072d, type: 3}
+  - {fileID: 12800000, guid: d0256d6b54de48642aa3a011ed710d0e, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
