@@ -3,72 +3,97 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
-    public int EnemymaxHealth = 100; // Maximum health of the enemy
-    public float moveSpeed = 3f; // Movement speed of the enemy
-    public float knockbackDuration = 2f; // Duration for which the enemy moves away after collision
-    public int damage = 10; // Damage dealt to the player on collision
+    public int health = 100;
+    public float knockbackDuration = 2f;
+    public AudioClip hitSFX; // Reference to the hit sound effect
+    public float speed = 3f; // Speed at which the enemy moves towards the player
+    public int scoreValue = 10; // Amount of score to add when this enemy is killed
 
-    private int currentHealth; // Current health of the enemy
-    private Transform player; // Reference to the player's transform
-    private Rigidbody2D rb;
-    private bool isKnockedBack = false; // Flag to check if the enemy is in knockback state
+    private AudioSource audioSource;
+    private bool isKnockedBack = false;
+    private Vector3 knockbackDirection;
+    private float knockbackEndTime;
+    private Transform playerTransform;
 
     private void Start()
     {
-        currentHealth = EnemymaxHealth;
-        player = GameObject.FindGameObjectWithTag("Player").transform; // Assumes the player has the "Player" tag
-        rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
+        // Ignore collisions between enemies
         int enemyLayer = LayerMask.NameToLayer("Enemy");
         Physics2D.IgnoreLayerCollision(enemyLayer, enemyLayer, true);
     }
 
     private void Update()
     {
-        if (!isKnockedBack)
+        if (isKnockedBack)
+        {
+            if (Time.time > knockbackEndTime)
+            {
+                isKnockedBack = false;
+            }
+            else
+            {
+                transform.position += knockbackDirection * Time.deltaTime;
+            }
+        }
+        else
         {
             MoveTowardsPlayer();
         }
     }
 
-    private void MoveTowardsPlayer()
+    public void TakeDamage(int damage)
     {
-        Vector2 direction = (player.position - transform.position).normalized;
-        rb.velocity = direction * moveSpeed;
+        Debug.Log("Enemy takes damage: " + damage);
+        health -= damage;
+        Debug.Log("Enemy health: " + health);
+
+        if (health <= 0)
+        {
+            Die();
+        }
+
+        // Play hit sound effect
+        if (hitSFX != null)
+        {
+            audioSource.PlayOneShot(hitSFX);
+        }
+
+        // Apply knockback effect
+        StartCoroutine(Knockback());
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void MoveTowardsPlayer()
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (playerTransform != null)
         {
-            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(damage); // Assumes the player has a PlayerHealth script
-            StartCoroutine(Knockback());
+            Vector3 direction = (playerTransform.position - transform.position).normalized;
+            transform.position += direction * speed * Time.deltaTime;
         }
     }
 
     private IEnumerator Knockback()
     {
         isKnockedBack = true;
-        Vector2 knockbackDirection = (transform.position - player.position).normalized;
-        rb.velocity = knockbackDirection * moveSpeed;
+        knockbackEndTime = Time.time + knockbackDuration;
+        Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
+        knockbackDirection = -directionToPlayer * speed; // Adjust knockback direction and force
 
         yield return new WaitForSeconds(knockbackDuration);
 
         isKnockedBack = false;
     }
 
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
     private void Die()
     {
-        // Add death logic here (e.g., play animation, destroy object)
+        Debug.Log("Enemy died.");
+        // Add score when the enemy dies
+        if (ScoreManager.instance != null)
+        {
+            ScoreManager.instance.AddScore(scoreValue);
+        }
         Destroy(gameObject);
     }
 }
