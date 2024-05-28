@@ -5100,7 +5100,7 @@ MonoBehaviour:
   cursorPrefab: {fileID: 4006846878859553500, guid: 26e64f5b750f60f4ea96b6258fcfe365, type: 3}
   cursorSpeed: 10
   projectileLifetime: 3
-  damage: 20
+  damage: 100
   isPrimaryModeUnlocked: 1
   isSecondaryModeUnlocked: 1
   isShotgunModeUnlocked: 1

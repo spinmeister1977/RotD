@@ -102,6 +102,7 @@ MonoBehaviour:
   health: 100
   knockbackDuration: 2
   hitSFX: {fileID: 8300000, guid: bfd963d3a34658b41a6f42a3e6f182a5, type: 3}
+  speed: 3
 --- !u!61 &2701275258484885715
 BoxCollider2D:
   m_ObjectHideFlags: 0

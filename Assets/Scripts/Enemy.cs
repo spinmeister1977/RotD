@@ -1,99 +1,71 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public int health = 100;
-    public float knockbackDuration = 2f;
-    public AudioClip hitSFX; // Reference to the hit sound effect
-    public float speed = 3f; // Speed at which the enemy moves towards the player
+    public float moveSpeed = 3f; // Movement speed of the enemy
+    public float knockbackDuration = 2f; // Duration for which the enemy moves away after collision
+    public int damage = 10; // Damage dealt to the player on collision
+    public int maxHealth = 100; // Maximum health of the enemy
 
-    private AudioSource audioSource;
-    private bool isKnockedBack = false;
-    private Vector3 knockbackDirection;
-    private float knockbackEndTime;
-    private Transform playerTransform;
+    private Transform player; // Reference to the player's transform
+    private Rigidbody2D rb;
+    private int currentHealth; // Current health of the enemy
+    private bool isKnockedBack = false; // Flag to check if the enemy is in knockback state
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-
-        // Ensure AudioSource is present
-        if (audioSource == null)
-        {
-            Debug.LogError("AudioSource component is missing on the enemy.");
-        }
+        player = GameObject.FindGameObjectWithTag("Player").transform; // Assumes the player has the "Player" tag
+        rb = GetComponent<Rigidbody2D>();
+        currentHealth = maxHealth;
     }
 
     private void Update()
     {
-        if (isKnockedBack)
-        {
-            if (Time.time > knockbackEndTime)
-            {
-                isKnockedBack = false;
-            }
-            else
-            {
-                transform.position += knockbackDirection * Time.deltaTime;
-            }
-        }
-        else
+        if (!isKnockedBack)
         {
             MoveTowardsPlayer();
         }
     }
 
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-        Debug.Log("Enemy took damage: " + damage);
-
-        if (health <= 0)
-        {
-            Die();
-        }
-
-        // Play hit sound effect
-        if (hitSFX != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(hitSFX);
-            Debug.Log("Playing hit sound effect.");
-        }
-        else
-        {
-            Debug.LogWarning("Hit sound effect or AudioSource is not set.");
-        }
-
-        // Apply knockback effect
-        StartCoroutine(Knockback());
-    }
-
     private void MoveTowardsPlayer()
     {
-        if (playerTransform != null)
+        Vector2 direction = (player.position - transform.position).normalized;
+        rb.velocity = direction * moveSpeed;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
         {
-            Vector3 direction = (playerTransform.position - transform.position).normalized;
-            transform.position += direction * speed * Time.deltaTime;
+            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(damage); // Assumes the player has a PlayerHealth script
+            StartCoroutine(Knockback());
         }
     }
 
     private IEnumerator Knockback()
     {
         isKnockedBack = true;
-        knockbackEndTime = Time.time + knockbackDuration;
-        Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
-        knockbackDirection = -directionToPlayer * speed; // Adjust knockback direction and force
+        Vector2 knockbackDirection = (transform.position - player.position).normalized;
+        rb.velocity = knockbackDirection * moveSpeed;
 
         yield return new WaitForSeconds(knockbackDuration);
 
         isKnockedBack = false;
     }
 
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
     private void Die()
     {
-        // Implement enemy death logic
+        // Add death logic here (e.g., play animation, destroy object)
         Destroy(gameObject);
     }
 }
