@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1306902193264915703}
   - component: {fileID: -8524320495108404429}
   - component: {fileID: 5009523428573215829}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Projectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 50
-  lifetime: 5
+  lifetime: 10
 --- !u!50 &5009523428573215829
 Rigidbody2D:
   serializedVersion: 4
@@ -131,7 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3406875176576657623}
   - component: {fileID: 3953068656626190719}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
