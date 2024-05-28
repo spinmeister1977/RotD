@@ -19,6 +19,8 @@ public class PlayerShooting : MonoBehaviour
     public GameObject cursorPrefab;
     public float cursorSpeed = 5f;
     public float projectileLifetime = 3f;
+    public int damage = 20;
+
 
     [SerializeField] private bool isPrimaryModeUnlocked = true;  // Initialized as unlocked
     [SerializeField] private bool isSecondaryModeUnlocked = false;
@@ -202,11 +204,22 @@ public class PlayerShooting : MonoBehaviour
         GameObject projectile = Instantiate(projectilePrefabs[(int)currentMode], firePoint.position, Quaternion.identity);
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
         rb.velocity = direction * projectileSpeed;
+
+        // Destroy the projectile after a certain time
         Destroy(projectile, projectileLifetime);
+
+        // Check for collisions with enemies
+        RaycastHit2D[] hits = Physics2D.RaycastAll(firePoint.position, direction, projectileLifetime * projectileSpeed);
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                hit.collider.GetComponent<Enemy>().TakeDamage(damage);
+            }
+        }
     }
 
-
-public int GetCurrentAmmo()
+    public int GetCurrentAmmo()
     {
         return currentAmmo;
 
