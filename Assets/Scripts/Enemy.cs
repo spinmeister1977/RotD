@@ -1,23 +1,26 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
+    public int EnemymaxHealth = 100; // Maximum health of the enemy
     public float moveSpeed = 3f; // Movement speed of the enemy
     public float knockbackDuration = 2f; // Duration for which the enemy moves away after collision
     public int damage = 10; // Damage dealt to the player on collision
-    public int maxHealth = 100; // Maximum health of the enemy
 
+    private int currentHealth; // Current health of the enemy
     private Transform player; // Reference to the player's transform
     private Rigidbody2D rb;
-    private int currentHealth; // Current health of the enemy
     private bool isKnockedBack = false; // Flag to check if the enemy is in knockback state
 
     private void Start()
     {
+        currentHealth = EnemymaxHealth;
         player = GameObject.FindGameObjectWithTag("Player").transform; // Assumes the player has the "Player" tag
         rb = GetComponent<Rigidbody2D>();
-        currentHealth = maxHealth;
+
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        Physics2D.IgnoreLayerCollision(enemyLayer, enemyLayer, true);
     }
 
     private void Update()
