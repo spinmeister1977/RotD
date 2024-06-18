@@ -11,18 +11,37 @@ public class Enemy : MonoBehaviour
 
     private AudioSource audioSource;
     private bool isKnockedBack = false;
-    private Vector3 knockbackDirection;
+    private Vector2 knockbackDirection;
     private float knockbackEndTime;
     private Transform playerTransform;
+    private Rigidbody2D rb;
 
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        rb = GetComponent<Rigidbody2D>();
+
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D component missing from enemy.");
+        }
+
+        playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+        if (playerTransform == null)
+        {
+            Debug.LogError("Player object not found. Make sure your player has the tag 'Player'.");
+        }
+        else
+        {
+            Debug.Log("Player found.");
+        }
 
         // Ignore collisions between enemies
         int enemyLayer = LayerMask.NameToLayer("Enemy");
         Physics2D.IgnoreLayerCollision(enemyLayer, enemyLayer, true);
+
+        // Set Rigidbody2D constraints
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     private void Update()
@@ -32,10 +51,7 @@ public class Enemy : MonoBehaviour
             if (Time.time > knockbackEndTime)
             {
                 isKnockedBack = false;
-            }
-            else
-            {
-                transform.position += knockbackDirection * Time.deltaTime;
+                rb.velocity = Vector2.zero; // Stop movement after knockback
             }
         }
         else
@@ -67,10 +83,15 @@ public class Enemy : MonoBehaviour
 
     private void MoveTowardsPlayer()
     {
-        if (playerTransform != null)
+        if (playerTransform != null && !isKnockedBack)
         {
-            Vector3 direction = (playerTransform.position - transform.position).normalized;
-            transform.position += direction * speed * Time.deltaTime;
+            Vector2 direction = (playerTransform.position - transform.position).normalized;
+            rb.velocity = direction * speed;
+            Debug.Log("Moving towards player with velocity: " + rb.velocity);
+        }
+        else
+        {
+            Debug.Log("Player transform is null or enemy is knocked back.");
         }
     }
 
@@ -78,8 +99,11 @@ public class Enemy : MonoBehaviour
     {
         isKnockedBack = true;
         knockbackEndTime = Time.time + knockbackDuration;
-        Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
-        knockbackDirection = -directionToPlayer * speed; // Adjust knockback direction and force
+        Vector2 directionToPlayer = (playerTransform.position - transform.position).normalized;
+        knockbackDirection = -directionToPlayer * speed;
+
+        rb.velocity = knockbackDirection; // Apply knockback force
+        Debug.Log("Applying knockback with velocity: " + rb.velocity);
 
         yield return new WaitForSeconds(knockbackDuration);
 
@@ -95,5 +119,14 @@ public class Enemy : MonoBehaviour
             ScoreManager.instance.AddScore(scoreValue);
         }
         Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            // Apply knockback when colliding with the player
+            StartCoroutine(Knockback());
+        }
     }
 }

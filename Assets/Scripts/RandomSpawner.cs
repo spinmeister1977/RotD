@@ -37,11 +37,11 @@ public class RandomSpawner : MonoBehaviour
             {
                 // Use the position of the anchor object for spawning
                 Instantiate(prefabToSpawn, spawnAnchor.position, Quaternion.identity);
-                Debug.Log("Object spawned successfully at anchor position.");
+                //Debug.Log("Object spawned successfully at anchor position.");
             }
             else
             {
-                Debug.Log("Object not spawned due to low random value.");
+                //Debug.Log("Object not spawned due to low random value.");
             }
         }
     }

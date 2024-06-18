@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 3317287308951569972}
   - component: {fileID: 3304768356586249570}
   - component: {fileID: 7973364031023452821}
+  - component: {fileID: 4021284638549304523}
   - component: {fileID: 2704951767529452157}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Rocks
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -119,7 +120,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.02004838, y: -0.02004826}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -130,8 +131,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_Size: {x: 1.7217429, y: 1.7752054}
+  m_EdgeRadius: 0.01
 --- !u!50 &7973364031023452821
 Rigidbody2D:
   serializedVersion: 4
@@ -159,6 +160,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &4021284638549304523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5838128109384767908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72a0fd2cec19d7e45b0457cca9f1899b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 1
+  scoreValue: 1
 --- !u!114 &2704951767529452157
 MonoBehaviour:
   m_ObjectHideFlags: 0

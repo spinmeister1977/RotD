@@ -1,10 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager instance; // Singleton instance
-    public Text scoreText; // Reference to the UI Text element displaying the score
+    public TextMeshProUGUI scoreText; // Reference to the TextMeshProUGUI element displaying the score
     private int score = 0;
 
     private void Awake()
@@ -32,6 +33,23 @@ public class ScoreManager : MonoBehaviour
         if (scoreText != null)
         {
             scoreText.text = "Score: " + score.ToString();
+        }
+    }
+
+    public int GetScore()
+    {
+        return score;
+    }
+
+    public void CheckGameEnd()
+    {
+        if (score >= 1000)
+        {
+            SceneManager.LoadScene("VictoryScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("LossScene");
         }
     }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1306902193264915703}
   - component: {fileID: -8524320495108404429}
   - component: {fileID: 5009523428573215829}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Projectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
@@ -78,7 +78,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 21}
+  m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0
 --- !u!114 &-8524320495108404429
 MonoBehaviour:
@@ -131,7 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3406875176576657623}
   - component: {fileID: 3953068656626190719}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Capsule (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
