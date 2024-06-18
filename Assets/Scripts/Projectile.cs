@@ -24,5 +24,18 @@ public class Projectile : MonoBehaviour
             return;
         }
 
+        // Check if the object has a DestructibleBarrel component
+        DestructibleBarrel barrel = collision.GetComponent<DestructibleBarrel>();
+        if (barrel != null)
+        {
+            barrel.TakeDamage(damage);
+            Debug.Log("Projectile hit barrel. Barrel health: " + barrel.health);
+            // Destroy the projectile after hitting the barrel
+            Destroy(gameObject);
+            return;
+        }
+
+     
+       
     }
 }

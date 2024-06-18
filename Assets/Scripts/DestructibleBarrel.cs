@@ -1,45 +1,32 @@
 using UnityEngine;
 
-public class Rock : MonoBehaviour
+public class DestructibleBarrel : MonoBehaviour
 {
     public int health = 50; // Health of the destructible object
     public int scoreValue = 10;
 
-
     // Method to apply damage to the object
     public void TakeDamage(int damage)
     {
-        Debug.Log("Enemy takes damage: " + damage);
+        Debug.Log("Rock takes damage: " + damage);
         health -= damage;
-        Debug.Log("Enemy health: " + health);
+        Debug.Log("Rock health: " + health);
 
         if (health <= 0)
         {
-            Die();
+            despawnDie();
         }
+    }
 
-        // Method to handle the object's destruction
-        if (health <= 0)
+    // Method to handle the object's destruction
+    public void despawnDie()
+    {
+        Debug.Log("Rock destroyed.");
+        // Add score when the rock is destroyed
+        if (ScoreManager.instance != null)
         {
-            Die();
+            ScoreManager.instance.AddScore(scoreValue);
         }
-
-       
-    } 
-    public void Die()
-        {
-            Debug.Log("Enemy died.");
-            // Add score when the enemy dies
-            if (ScoreManager.instance != null)
-            {
-                ScoreManager.instance.AddScore(scoreValue);
-            }
-            Destroy(gameObject);
-        }
-
-
-
-
-
+        Destroy(gameObject);
+    }
 }
-
