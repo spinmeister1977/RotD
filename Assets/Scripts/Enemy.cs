@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     public AudioClip hitSFX; // Reference to the hit sound effect
     public float speed = 3f; // Speed at which the enemy moves towards the player
     public int scoreValue = 10; // Amount of score to add when this enemy is killed
+    public int damage = 10; // Damage dealt to the player
 
     private AudioSource audioSource;
     private bool isKnockedBack = false;
@@ -125,6 +126,13 @@ public class Enemy : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            // Deal damage to the player
+            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(damage);
+            }
+
             // Apply knockback when colliding with the player
             StartCoroutine(Knockback());
         }

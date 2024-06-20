@@ -1,28 +1,35 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
-public class ScoreCounter : MonoBehaviour
+public class DisplayScore : MonoBehaviour
 {
-    [SerializeField] private Text scoreText; // Reference to the Text UI element
-    private int score = 0;
+    [SerializeField] private TextMeshProUGUI scoreText; // Reference to the TextMeshProUGUI element
+
+    private void Start()
+    {
+        // Optionally, find the ScoreManager instance if not assigned
+        if (ScoreManager.instance == null)
+        {
+            Debug.LogError("ScoreManager instance not found. Ensure there is a ScoreManager in the scene.");
+            return;
+        }
+
+        // Update the score display at the start
+        UpdateScoreDisplay();
+    }
+
+    private void Update()
+    {
+        UpdateScoreDisplay();
+    }
 
     // Update the score display
     private void UpdateScoreDisplay()
     {
-        scoreText.text = "Score: " + score.ToString();
-    }
-
-    // Public method to increase the score
-    public void AddScore(int amount)
-    {
-        score += amount;
-        UpdateScoreDisplay();
-    }
-
-    // Optional: Reset the score to zero
-    public void ResetScore()
-    {
-        score = 0;
-        UpdateScoreDisplay();
+        if (ScoreManager.instance != null)
+        {
+            int currentScore = ScoreManager.instance.GetScore();
+            scoreText.text = "Score: " + currentScore.ToString();
+        }
     }
 }

@@ -44,8 +44,9 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player has died.");
         OnPlayerDeath?.Invoke(); // Invoke any subscribers to the death event
-        // Optionally, handle player death (disable movement, show game over screen, etc.)
-        Destroy(gameObject);
+
+        // Handle the end of the game by checking the score
+        ScoreManager.instance.CheckGameEnd();
     }
 
     // Optional: Method to reset health back to full (could be called on respawn or level restart)
